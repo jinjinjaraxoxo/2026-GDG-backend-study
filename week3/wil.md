@@ -106,6 +106,7 @@ JPQL은 SQL과 비슷하지만 테이블이 아니라 엔티티 객체를 기준
 
 ```java
 em.createQuery("select m from Member m", Member.class).getResultList();
+```
 
 ### 7. 느낀 점 
 
