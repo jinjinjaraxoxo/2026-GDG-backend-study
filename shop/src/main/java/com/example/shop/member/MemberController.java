@@ -30,13 +30,13 @@ public class MemberController {
     }
 
     @GetMapping("/{memberId}")
-    public ResponseEntity<Member> getMember(@PathVariable("memberId") Long memberId) {
+    public ResponseEntity<Member> getMember(@PathVariable Long memberId) {
         return ResponseEntity.ok(memberService.getMember(memberId));
     }
 
     @PatchMapping("/{memberId}")
     public ResponseEntity<Member> updateMember(
-            @PathVariable("memberId") Long memberId,
+            @PathVariable Long memberId,
             @RequestBody MemberUpdateRequest request
     ) {
         Member updatedMember = memberService.updateMember(memberId, request);
@@ -44,7 +44,7 @@ public class MemberController {
     }
 
     @DeleteMapping("/{memberId}")
-    public ResponseEntity<Void> deleteMember(@PathVariable("memberId") Long memberId) {
+    public ResponseEntity<Void> deleteMember(@PathVariable Long memberId) {
         memberService.deleteMember(memberId);
         return ResponseEntity.noContent().build();
     }
