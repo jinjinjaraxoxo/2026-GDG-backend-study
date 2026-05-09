@@ -4,7 +4,7 @@
 
 ### 1. ERD (Entity-Relationship Diagram)
 
-ERD는 데이터베이스 설계를 위한 **데이터 청사진(blueprint)**이다.
+ERD는 데이터베이스 설계를 위한 데이터 청사진이다.
 
 - **Entity(개체)**: 관리해야 할 데이터의 주체 (ex. Member, Product, Order)
 - **Attribute(속성)**: 각 엔티티가 가지는 구체적인 정보. 속성 = 필드(Field) = 컬럼(Column)
@@ -27,7 +27,7 @@ ERD는 데이터베이스 설계를 위한 **데이터 청사진(blueprint)**이
 ### 2. JPA & ORM
 
 #### ORM (Object-Relational Mapping)
-- 객체와 관계형 데이터베이스의 데이터를 **자동으로 매핑(연결)**해주는 기술
+- 객체와 관계형 데이터베이스의 데이터를 자동으로 매핑해주는 기술
 - 객체-데이터베이스 간 패러다임 차이 해결
 - 반복적인 CRUD SQL을 자동으로 처리
 
