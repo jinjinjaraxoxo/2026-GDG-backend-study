@@ -1,0 +1,3 @@
+rootProject.name = '2026-GDG-backend-study'
+
+includeBuild 'shop'
