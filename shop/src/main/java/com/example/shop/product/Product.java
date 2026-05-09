@@ -1,23 +1,27 @@
 package com.example.shop.product;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
+@Table(name = "products")
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = lombok.AccessLevel.PROTECTED)
 public class Product {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "product_id")
     private Long id;
 
+    @Column(name = "product_name", length = 255)
     private String name;
+
+    @Column(name = "product_price")
     private int price;
+
+    @Column(name = "product_stock")
     private int stock;
 
     public Product(String name, int price, int stock) {

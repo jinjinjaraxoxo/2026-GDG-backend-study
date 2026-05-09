@@ -1,29 +1,39 @@
 package com.example.shop.order;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.example.shop.member.Member;
+import com.example.shop.product.Product;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
+@Table(name = "orders")
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = lombok.AccessLevel.PROTECTED)
 public class Order {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "order_id")
     private Long id;
 
-    private Long memberId;
-    private Long productId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    private Member member;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id")
+    private Product product;
+
+    @Column(name = "quantity")
     private int quantity;
+
+    @Column(name = "status", length = 20)
     private String status;
 
-    public Order(Long memberId, Long productId, int quantity) {
-        this.memberId = memberId;
-        this.productId = productId;
+    public Order(Member member, Product product, int quantity) {
+        this.member = member;
+        this.product = product;
         this.quantity = quantity;
         this.status = "ORDERED";
     }

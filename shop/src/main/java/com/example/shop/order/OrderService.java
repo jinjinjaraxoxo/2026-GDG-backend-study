@@ -1,58 +1,86 @@
 package com.example.shop.order;
 
+import com.example.shop.member.Member;
+import com.example.shop.member.MemberRepository;
+import com.example.shop.product.Product;
+import com.example.shop.product.ProductRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class OrderService {
 
+    private final OrderRepository orderRepository;
+    private final MemberRepository memberRepository;
+    private final ProductRepository productRepository;
+
+    public OrderService(OrderRepository orderRepository, MemberRepository memberRepository, ProductRepository productRepository) {
+        this.orderRepository = orderRepository;
+        this.memberRepository = memberRepository;
+        this.productRepository = productRepository;
+    }
+
+    @Transactional
     public Map<String, Object> createOrder(Map<String, Object> request) {
+        Long memberId = Long.valueOf(request.get("memberId").toString());
+        Long productId = Long.valueOf(request.get("productId").toString());
+        int quantity = Integer.parseInt(request.get("quantity").toString());
+
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new IllegalArgumentException("회원을 찾을 수 없습니다. id=" + memberId));
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new IllegalArgumentException("상품을 찾을 수 없습니다. id=" + productId));
+
+        Order order = new Order(member, product, quantity);
+        orderRepository.save(order);
+
         Map<String, Object> response = new LinkedHashMap<>();
         response.put("message", "주문 생성이 완료되었습니다.");
-        response.put("memberId", request.get("memberId"));
-        response.put("productId", request.get("productId"));
-        response.put("quantity", request.get("quantity"));
-        response.put("orderStatus", "CREATED");
+        response.put("orderId", order.getId());
+        response.put("memberId", memberId);
+        response.put("productId", productId);
+        response.put("quantity", quantity);
+        response.put("status", order.getStatus());
         return response;
     }
 
     public List<Map<String, Object>> getOrders() {
-        return List.of(
-                Map.of(
-                        "orderId", 1L,
-                        "memberId", 1L,
-                        "productId", 1L,
-                        "quantity", 2,
-                        "orderStatus", "CREATED"
-                ),
-                Map.of(
-                        "orderId", 2L,
-                        "memberId", 2L,
-                        "productId", 2L,
-                        "quantity", 1,
-                        "orderStatus", "CREATED"
-                )
-        );
+        return orderRepository.findAll().stream()
+                .map(this::toMap)
+                .collect(Collectors.toList());
     }
 
     public Map<String, Object> getOrder(Long orderId) {
-        Map<String, Object> response = new LinkedHashMap<>();
-        response.put("orderId", orderId);
-        response.put("memberId", 1L);
-        response.put("productId", 1L);
-        response.put("quantity", 3);
-        response.put("orderStatus", "CREATED");
-        return response;
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new IllegalArgumentException("주문을 찾을 수 없습니다. id=" + orderId));
+        return toMap(order);
     }
 
+    @Transactional
     public Map<String, Object> cancelOrder(Long orderId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new IllegalArgumentException("주문을 찾을 수 없습니다. id=" + orderId));
+        order.cancel();
+
         Map<String, Object> response = new LinkedHashMap<>();
         response.put("message", "주문 취소가 완료되었습니다.");
         response.put("orderId", orderId);
-        response.put("orderStatus", "CANCELED");
+        response.put("status", order.getStatus());
         return response;
+    }
+
+    private Map<String, Object> toMap(Order order) {
+        Map<String, Object> map = new LinkedHashMap<>();
+        map.put("orderId", order.getId());
+        map.put("memberId", order.getMember().getId());
+        map.put("productId", order.getProduct().getId());
+        map.put("quantity", order.getQuantity());
+        map.put("status", order.getStatus());
+        return map;
     }
 }
