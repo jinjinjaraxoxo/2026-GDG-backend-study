@@ -173,7 +173,7 @@ public class AppConfig {
 
 ---
 
-## 4. 이번 주 핵심 정리
+## 4.정리
 
 ```
 스프링 = 객체 지향 + IoC/DI 컨테이너
