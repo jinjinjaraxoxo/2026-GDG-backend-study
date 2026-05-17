@@ -1,5 +1,7 @@
 package com.example.shop.product.service;
 
+import com.example.shop.common.exception.NotFoundException;
+import com.example.shop.common.message.ErrorMessage;
 import com.example.shop.product.dto.ProductCreateRequest;
 import com.example.shop.product.dto.ProductUpdateRequest;
 import com.example.shop.product.entity.Product;
@@ -37,13 +39,13 @@ public class ProductServiceImpl implements ProductService {
     @Transactional(readOnly = true)
     public Product getProduct(Long productId) {
         return productRepository.findById(productId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 상품입니다."));
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.PRODUCT_NOT_FOUND));
     }
 
     @Override
     public void updateProduct(Long productId, ProductUpdateRequest request) {
         Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 상품입니다."));
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.PRODUCT_NOT_FOUND));
 
         product.updateInfo(
                 request.getName(),
@@ -55,7 +57,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public void deleteProduct(Long productId) {
         Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 상품입니다."));
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.PRODUCT_NOT_FOUND));
 
         productRepository.delete(product);
     }
